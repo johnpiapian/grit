@@ -1,12 +1,12 @@
 {
   "name": "grit",
-  "version": "0.1.0",
+  "version": "2026.6.20-alpha",
   "description": "A simple CLI tool built with Bun",
   "author": "Sut Tuang - @johnpiapian",
   "license": "ISC",
   "type": "module",
   "bin": {
-    "grit": "./dist/index.js"
+    "grit": "./bin/grit.ts"
   },
   "scripts": {
     "clean": "rm -rf dist",
@@ -43,5 +43,8 @@
     "@biomejs/biome": "^2.5.0",
     "@types/bun": "^1.3.14",
     "typescript": "^6.0.3"
+  },
+  "dependencies": {
+    "commander": "^15.0.0"
   }
 }

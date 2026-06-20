@@ -1,8 +1,19 @@
-#!/usr/bin/env bun
+import { main } from "./cli";
+import pkg from "../package.json" with { type: "json" };
 
-export const buildGreeting = (name = "world") => `Hello, ${name}!`
+const defaultProgramInfo = {
+  name: "grit",
+  description: "A simple CLI tool built with Bun",
+  version: "0.1.0",
+};
 
-if (import.meta.main) {
-  const name = Bun.argv[2] ?? "world"
-  console.log(buildGreeting(name))
-}
+const programInfo = {
+  name: pkg.name || defaultProgramInfo.name,
+  description: pkg.description || defaultProgramInfo.description,
+  version: pkg.version || defaultProgramInfo.version,
+};
+
+main({ ...programInfo }).catch((error) => {
+  console.error("An error occurred:", error);
+  process.exit(1);
+});

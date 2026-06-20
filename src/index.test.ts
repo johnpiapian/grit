@@ -1,13 +1,12 @@
 import { describe, expect, it } from "bun:test"
+import { main } from "./cli"
 
-import { buildGreeting } from "./index"
-
-describe("buildGreeting", () => {
-  it("defaults to world", () => {
-    expect(buildGreeting()).toBe("Hello, world!")
+describe("main function", () => {
+  it("should be defined", () => {
+    expect(main).toBeDefined()
   })
 
-  it("uses provided name", () => {
-    expect(buildGreeting("John")).toBe("Hello, John!")
+  it("should be a function", () => {
+    expect(typeof main).toBe("function")
   })
 })
