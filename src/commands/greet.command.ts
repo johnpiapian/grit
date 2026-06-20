@@ -1,13 +1,12 @@
 import { Command } from "commander"
 import { BaseCliCommand } from "../core/common/command.base"
-import { GreetingService } from "../core/greeting.service"
 import { Response } from "../core/common/response.model"
-
 import {
-  SUPPORTED_STYLES,
-  SUPPORTED_LANGUAGES,
-  type GreetOptions,
+  GreetingService,
   type GreetingStyle,
+  type GreetOptions,
+  SUPPORTED_LANGUAGES,
+  SUPPORTED_STYLES,
 } from "../core/greeting.service"
 
 export class GreetCommand extends BaseCliCommand {
@@ -23,7 +22,10 @@ export class GreetCommand extends BaseCliCommand {
   build(): Command {
     const greetCommand = new Command(this.id)
       .description(this.description)
-      .argument("<style>", `Greeting style (${this.supportedStyles.join(", ")})`)
+      .argument(
+        "<style>",
+        `Greeting style (${this.supportedStyles.join(", ")})`,
+      )
       .argument("[name]", "Name of the person to greet", "world")
       .option("-l, --loud", "Print greeting in uppercase")
       .option("-e, --emoji", "Include emojis in the greeting")
@@ -46,26 +48,41 @@ export class GreetCommand extends BaseCliCommand {
     return greetCommand
   }
 
-  private validateInput(name: string, style: GreetingStyle, options: GreetOptions): Response {
+  private validateInput(
+    name: string,
+    style: GreetingStyle,
+    options: GreetOptions,
+  ): Response {
     if (!name.trim()) {
       return Response.invalidArguments("Name cannot be empty.")
     }
 
     if (!this.supportedStyles.includes(style)) {
-      return Response.invalidArguments(`Invalid style '${style}'. Supported styles are: ${this.supportedStyles.join(", ")}`)
+      return Response.invalidArguments(
+        `Invalid style '${style}'. Supported styles are: ${this.supportedStyles.join(", ")}`,
+      )
     }
 
-    if (options.language && !this.supportedLanguages.includes(options.language)) {
-      return Response.invalidArguments(`Unsupported language '${options.language}'. Supported languages are: ${this.supportedLanguages.join(", ")}`)
+    if (
+      options.language &&
+      !this.supportedLanguages.includes(options.language)
+    ) {
+      return Response.invalidArguments(
+        `Unsupported language '${options.language}'. Supported languages are: ${this.supportedLanguages.join(", ")}`,
+      )
     }
 
     return Response.success()
   }
 
-  private processGreeting(name: string, style: GreetingStyle, options: GreetOptions): Response<string> {
+  private processGreeting(
+    name: string,
+    style: GreetingStyle,
+    options: GreetOptions,
+  ): Response<string> {
     const message = this.greetingService.buildGreeting({
       name,
-      style: style as any,
+      style: style,
       loud: options.loud,
       emoji: options.emoji,
       language: options.language,

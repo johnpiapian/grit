@@ -1,8 +1,7 @@
 import { Command } from "commander"
+import { GreetCommand } from "./commands/greet.command"
 import { loadAppConfig } from "./configs/app.config"
 import { CommandRegistry } from "./core/common/command.registry"
-
-import { GreetCommand } from "./commands/greet.command"
 
 type MainParams = {
   name: string

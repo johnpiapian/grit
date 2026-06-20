@@ -9,12 +9,12 @@ export enum StatusCode {
   TERMINATED = 143,
 }
 
-export class Response<T = any> {
+export class Response<T = undefined> {
   status: number
   message: string
-  data: T
+  data: T | undefined
 
-  constructor(status: number, message: string, data: any = null) {
+  constructor(status: number, message: string, data?: T) {
     this.status = status
     this.message = message
     this.data = data
@@ -40,35 +40,44 @@ export class Response<T = any> {
     }
   }
 
-  static success(message: string = '', data: any = null): Response {
+  static success<T = undefined>(message: string = "", data?: T): Response<T> {
     return new Response(StatusCode.SUCCESS, message, data)
   }
 
-  static error(message: string, data: any = null): Response {
+  static error<T = undefined>(message: string, data?: T): Response<T> {
     return new Response(StatusCode.GENERAL_ERROR, message, data)
   }
 
-  static invalidArguments(message: string, data: any = null): Response {
+  static invalidArguments<T = undefined>(
+    message: string,
+    data?: T,
+  ): Response<T> {
     return new Response(StatusCode.INVALID_ARGUMENTS, message, data)
   }
 
-  static commandNotExecutable(message: string, data: any = null): Response {
+  static commandNotExecutable<T = undefined>(
+    message: string,
+    data?: T,
+  ): Response<T> {
     return new Response(StatusCode.COMMAND_NOT_EXECUTABLE, message, data)
   }
 
-  static commandNotFound(message: string, data: any = null): Response {
+  static commandNotFound<T = undefined>(
+    message: string,
+    data?: T,
+  ): Response<T> {
     return new Response(StatusCode.COMMAND_NOT_FOUND, message, data)
   }
 
-  static interrupted(message: string, data: any = null): Response {
+  static interrupted<T = undefined>(message: string, data?: T): Response<T> {
     return new Response(StatusCode.INTERRUPTED, message, data)
   }
 
-  static killed(message: string, data: any = null): Response {
+  static killed<T = undefined>(message: string, data?: T): Response<T> {
     return new Response(StatusCode.KILLED, message, data)
   }
 
-  static terminated(message: string, data: any = null): Response {
+  static terminated<T = undefined>(message: string, data?: T): Response<T> {
     return new Response(StatusCode.TERMINATED, message, data)
   }
 }

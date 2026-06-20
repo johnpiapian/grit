@@ -3,8 +3,8 @@ import { getDayPeriod } from "../utils/time"
 export const SUPPORTED_STYLES = ["formal", "casual", "time"] as const
 export const SUPPORTED_LANGUAGES = ["es", "fr", "de", "jp", "default"] as const
 
-export type GreetingStyle = typeof SUPPORTED_STYLES[number]
-export type LanguageCode = typeof SUPPORTED_LANGUAGES[number]
+export type GreetingStyle = (typeof SUPPORTED_STYLES)[number]
+export type LanguageCode = (typeof SUPPORTED_LANGUAGES)[number]
 
 export type GreetOptions = {
   loud?: boolean
