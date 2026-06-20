@@ -1,4 +1,8 @@
 import { Command } from "commander"
+import { loadAppConfig } from "./configs/app.config"
+import { CommandRegistry } from "./core/common/command.registry"
+
+import { GreetCommand } from "./commands/greet.command"
 
 type MainParams = {
   name: string
@@ -6,27 +10,20 @@ type MainParams = {
   version: string
 }
 
-/**
- * @param params - The parameters for the main function, including optional name, description, and version.
- * @returns void
- * @description This function initializes a CLI program using the Commander library. It sets up a command 
- * called "greet" that takes an optional name argument and prints a greeting message to the console. 
- * The program is then parsed to handle user input.
- */
 export async function main(params: MainParams) {
+  const appConfig = loadAppConfig()
   const program = new Command()
+  const registry = new CommandRegistry()
 
   program
     .name(params.name)
     .description(params.description)
-    .version(params.version, '-v, --version')
+    .version(params.version, "-v, --version")
 
-  program
-    .command("greet [name]")
-    .description("Greet a person by name")
-    .action((name) => {
-      console.log(`Hello, ${name ?? "world"}!`)
-    })
+  registry.addCommands(new GreetCommand())
+  registry.register(program, {
+    enabledCommands: appConfig.enabledCommands,
+  })
 
   program.parse(process.argv)
 }
