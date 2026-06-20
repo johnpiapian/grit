@@ -1,6 +1,8 @@
 #!/usr/bin/env bun
 
-const args = Bun.argv.slice(2)
-const name = args[0] ?? "world"
+export const buildGreeting = (name = "world") => `Hello, ${name}!`
 
-console.log(`Hello, ${name}!`)
+if (import.meta.main) {
+  const name = Bun.argv[2] ?? "world"
+  console.log(buildGreeting(name))
+}
