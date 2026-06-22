@@ -1,5 +1,5 @@
 import type { Command } from "commander"
-import type { BaseCliCommand, CommandContext } from "./command.base"
+import type { BaseCliCommand, CommandContext } from "../core/command.base"
 
 export class CommandRegistry {
   private commands: BaseCliCommand[] = []

@@ -1,13 +1,13 @@
 import { Command } from "commander"
-import { BaseCliCommand } from "../core/common/command.base"
-import { Response } from "../core/common/response.model"
+import { BaseCliCommand } from "../core/command.base"
+import { Response } from "../core/response.model"
 import {
   GreetingService,
   type GreetingStyle,
   type GreetOptions,
   SUPPORTED_LANGUAGES,
   SUPPORTED_STYLES,
-} from "../core/greeting.service"
+} from "../services/greeting.service"
 
 export class GreetCommand extends BaseCliCommand {
   readonly id = "greet"
