@@ -5,9 +5,6 @@
   "author": "Sut Tuang - @johnpiapian",
   "license": "ISC",
   "type": "module",
-  "bin": {
-    "grit": "./bin/grit.ts"
-  },
   "scripts": {
     "clean": "rm -rf dist",
     "dev": "bun run --watch src/index.ts",
@@ -20,13 +17,16 @@
     "test": "bun test",
     "check": "bun run lint && bun run typecheck && bun test",
     "build": "bun run clean && bun build src/index.ts --outfile dist/index.js --target bun",
-    "compile": "bun build src/index.ts --compile --outfile dist/grit",
+    "build:standalone": "bun build src/index.ts --compile --outfile dist/grit",
     "prepack": "bun run build",
     "package": "bun pm pack"
   },
   "files": [
-    "dist"
+    "dist/index.js"
   ],
+  "bin": {
+    "grit": "./dist/index.js"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/johnpiapian/grit.git"
