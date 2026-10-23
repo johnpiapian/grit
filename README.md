@@ -23,7 +23,7 @@ bun run build
 bun run build:standalone
 ```
 
-`bun run build` bundles the CLI as `dist/index.js`. It still needs Bun to run.
+`bun run build` bundles the CLI as `dist/index.js`. It still needs Bun (or Node) to run.
 
 `bun run build:standalone` creates `dist/grit`, a platform-specific executable with the Bun runtime included. It runs without a separate Bun installation.
 
@@ -34,4 +34,4 @@ bun pm pack --dry-run
 bun pm pack
 ```
 
-Packaging runs the build and exposes `dist/index.js` as the `grit` command. The npm package requires Bun at runtime; the standalone executable is not included.
+Packaging runs the build and exposes `dist/index.js` as the `grit` command. The npm package requires Bun (or Node) at runtime; the standalone executable is not included.
