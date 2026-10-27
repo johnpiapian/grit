@@ -57,10 +57,9 @@ describe("Response", () => {
 
     try {
       Response.invalidArguments("Invalid input").print()
-
       expect(process.exitCode).toBe(StatusCode.INVALID_ARGUMENTS)
     } finally {
-      process.exitCode = previousExitCode
+      process.exitCode = previousExitCode ?? 0 // Restore or reset to 0
       errorOutput.mockRestore()
     }
   })
