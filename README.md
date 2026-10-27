@@ -48,15 +48,27 @@ GRIT_COMMANDS=greet bun run src/index.ts greet casual Ada
 ```text
 src/
 ├── index.ts                 # Executable entry point and process-level errors
-├── cli.ts                   # Commander setup, configuration, and registration
+├── index.test.ts            # CLI composition and response tests
+├── cli.ts                   # Commander setup, configuration, and command registration
 ├── commands/                # CLI command adapters, arguments, and validation
 ├── configs/                 # configuration and environment helpers
 ├── core/                    # Command contract, registry, and response model
-├── services/                # Greeting behavior, independent of CLI parsing
-└── utils/                   # Shared string and time helpers
+├── utils/                   # Shared string and time helpers
+└── services/
+	├── greeting.service.ts       # Greeting behavior, independent of CLI parsing
+	└── greeting.service.test.ts  # Greeting behavior tests
 ```
 
-`index.ts` reads package metadata and calls `main`. The CLI setup loads configuration and registers command implementations through `CommandRegistry`. Each command builds its Commander interface and delegates its domain work to a service; shared command and response behavior lives in `core/`.
+`index.ts` reads package metadata and calls `main`. `buildProgram` in `cli.ts` assembles configuration and command implementations; it accepts optional environment and command overrides. `main` accepts an optional argument list and parses it asynchronously, defaulting to the current process arguments. These inputs let tests exercise command composition and parsing without mutating process-global state. Each command builds its Commander interface and delegates domain work to a service; shared command and response behavior lives in `core/`.
+
+## Add a Command
+
+1. Add a class under `src/commands/` that extends `BaseCliCommand` and implements its `id`, `description`, and `build()` method.
+2. Keep argument parsing and validation in the command. Put reusable domain behavior in a service under `src/services/`.
+3. Register the command in the default command list in `src/cli.ts`.
+4. Add behavior-focused tests next to the code they cover, using Bun's test runner.
+
+Use `Response` for consistent output and error status handling. The `GRIT_COMMANDS` setting can then enable or filter registered commands by their IDs.
 
 ## Development
 
@@ -72,6 +84,7 @@ bun run check
 ```
 
 Individual checks are available with `bun test`, `bun run lint`, and `bun run typecheck`.
+The GitHub Actions workflow runs the full check suite on pushes to `main` and on pull requests.
 
 ## Build and Package
 

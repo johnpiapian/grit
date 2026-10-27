@@ -1,28 +1,44 @@
 import { Command } from "commander"
 import { GreetCommand } from "./commands/greet.command"
 import { loadAppConfig } from "./configs/app.config"
+import type { BaseCliCommand } from "./core/command.base"
 import { CommandRegistry } from "./core/command.registry"
 
-type MainParams = {
+export type MainParams = {
   name: string
   description: string
   version: string
 }
 
-export async function main(params: MainParams) {
-  const appConfig = loadAppConfig()
+export type MainOptions = {
+  argv?: string[]
+  env?: Record<string, string | undefined>
+  commands?: BaseCliCommand[]
+}
+
+export function buildProgram(
+  params: MainParams,
+  options: Pick<MainOptions, "env" | "commands"> = {},
+): Command {
+  const appConfig = loadAppConfig(options.env)
   const program = new Command()
-  const registry = new CommandRegistry()
+  const registry = new CommandRegistry(options.commands ?? [new GreetCommand()])
 
   program
     .name(params.name)
     .description(params.description)
     .version(params.version, "-v, --version")
 
-  registry.addCommands(new GreetCommand())
   registry.register(program, {
     enabledCommands: appConfig.enabledCommands,
   })
 
-  program.parse(process.argv)
+  return program
+}
+
+export async function main(
+  params: MainParams,
+  options: MainOptions = {},
+): Promise<void> {
+  await buildProgram(params, options).parseAsync(options.argv ?? process.argv)
 }

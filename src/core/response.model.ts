@@ -37,6 +37,7 @@ export class Response<T = undefined> {
       console.log(this.message)
     } else {
       console.error(`Error (${this.status}): ${this.message}`)
+      process.exitCode = this.status
     }
   }
 
