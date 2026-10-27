@@ -1,4 +1,4 @@
-export function parseCsvList(value: string | undefined): string[] {
+export function parseCSVList(value: string | undefined): string[] {
   if (!value) {
     return []
   }
