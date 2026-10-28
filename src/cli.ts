@@ -1,5 +1,6 @@
 import { Command } from "commander"
 import { GreetCommand } from "./commands/greet.command"
+import { UpdateCommand } from "./commands/update.command"
 import { loadAppConfig } from "./configs/app.config"
 import type { BaseCliCommand } from "./core/command.base"
 import { CommandRegistry } from "./core/command.registry"
@@ -22,7 +23,9 @@ export function buildProgram(
 ): Command {
   const appConfig = loadAppConfig(options.env)
   const program = new Command()
-  const registry = new CommandRegistry(options.commands ?? [new GreetCommand()])
+  const registry = new CommandRegistry(
+    options.commands ?? [new GreetCommand(), new UpdateCommand()],
+  )
 
   program
     .name(params.name)

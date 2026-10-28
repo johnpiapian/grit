@@ -77,9 +77,10 @@ jobs:
           NODE
 
       - name: Publish package
-        run: npm publish
+        run: npm publish --tag "$NPM_DIST_TAG"
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_DIST_TAG: ${{ contains(inputs.tag || github.ref_name, '-') && 'alpha' || 'latest' }}
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2

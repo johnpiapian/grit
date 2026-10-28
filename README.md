@@ -145,6 +145,8 @@ GitHub Packages may require authentication. See [GitHub's npm registry documenta
 
 ```bash
 grit greet casual Ada --emoji
+grit update
+grit update --channel alpha
 ```
 <!-- package-readme:end -->
 
