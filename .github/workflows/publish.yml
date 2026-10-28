@@ -1,11 +1,12 @@
 name: Publish to GitHub Packages
 
 on:
-  release:
-    types: [published]
+  push:
+    tags:
+      - "v*"
 
 permissions:
-  contents: read
+  contents: write
   packages: write
 
 jobs:
@@ -32,7 +33,46 @@ jobs:
           registry-url: https://npm.pkg.github.com
           scope: "@johnpiapian"
 
+      - name: Verify tag matches package version
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+          const packageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+          const expectedTag = `v${packageJson.version}`;
+
+          if (process.env.GITHUB_REF_NAME !== expectedTag) {
+            throw new Error(`Tag ${process.env.GITHUB_REF_NAME} does not match ${expectedTag}.`);
+          }
+          NODE
+
+      - name: Prepare package README
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+          const packageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+          const readme = fs.readFileSync('README.md', 'utf8');
+          const startMarker = '<!-- package-readme:start -->';
+          const endMarker = '<!-- package-readme:end -->';
+          const start = readme.indexOf(startMarker);
+          const end = readme.indexOf(endMarker, start + startMarker.length);
+
+          if (start === -1 || end === -1) {
+            throw new Error('Package README markers are missing or out of order.');
+          }
+
+          const section = readme.slice(start + startMarker.length, end).trim();
+          const packageReadme = `# ${packageJson.name}\n\n${packageJson.description}\n\n${section}\n`;
+          fs.writeFileSync('README.md', packageReadme);
+          NODE
+
       - name: Publish package
         run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: Grit ${{ github.ref_name }}
+          generate_release_notes: true
+          prerelease: ${{ contains(github.ref_name, '-') }}
