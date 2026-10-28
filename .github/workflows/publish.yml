@@ -1,4 +1,5 @@
-name: Publish to GitHub Packages
+name: Publish Package and Create GitHub Release
+# Publishes to GitHub Packages and creates a GitHub Release for version tags.
 
 on:
   push:
