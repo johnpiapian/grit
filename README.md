@@ -104,6 +104,50 @@ bun pm pack
 
 Packaging builds the CLI and exposes `dist/index.js` as the `grit` command. The standalone executable is not included in the npm package.
 
+## Release
+
+To release automatically, open a pull request from `release/<version>` into `main` and merge it. The branch suffix must match the version in `package.json`, for example `release/2026.10.27-alpha`. The workflow tags the merge commit, publishes the package, and creates a GitHub Release with generated notes.
+
+To publish manually instead, push a matching version tag after merging the version update:
+
+```bash
+VERSION=$(node -p "require('./package.json').version")
+git tag "v$VERSION"
+git push origin "v$VERSION"
+```
+
+The workflow verifies that the tag matches `package.json`, publishes the package to GitHub Packages, and generates release notes. Versions with a prerelease suffix, such as `-alpha`, create prereleases.
+
+<!-- The publish workflow extracts only the section between these markers. -->
+<!-- package-readme:start -->
+## Install
+
+Requires [Bun](https://bun.sh/). Configure npm to use GitHub Packages for the `@johnpiapian` scope, then install the package:
+
+Option 1: Configure the scope once, then install:
+
+```bash
+npm config set @johnpiapian:registry https://npm.pkg.github.com
+npm install -g @johnpiapian/grit
+```
+
+Option 2: Set the registries for this install only:
+
+```bash
+npm --registry=https://registry.npmjs.org \
+	--@johnpiapian:registry=https://npm.pkg.github.com \
+	install -g @johnpiapian/grit
+```
+
+GitHub Packages may require authentication. See [GitHub's npm registry documentation](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-npm-registry) for setup details.
+
+## Usage
+
+```bash
+grit greet casual Ada --emoji
+```
+<!-- package-readme:end -->
+
 ## License
 
 This project is distributed under the [ISC License](https://opensource.org/license/isc-license-txt/).

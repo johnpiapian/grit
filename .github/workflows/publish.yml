@@ -1,11 +1,18 @@
 name: Publish to GitHub Packages
 
 on:
-  release:
-    types: [published]
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Version tag to publish, such as v2026.10.27-alpha
+        required: true
+        type: string
 
 permissions:
-  contents: read
+  contents: write
   packages: write
 
 jobs:
@@ -16,6 +23,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v5
+        with:
+          ref: ${{ inputs.tag || github.ref }}
 
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
@@ -32,7 +41,49 @@ jobs:
           registry-url: https://npm.pkg.github.com
           scope: "@johnpiapian"
 
+      - name: Verify tag matches package version
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+          const packageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+          const expectedTag = `v${packageJson.version}`;
+
+          if (process.env.RELEASE_TAG !== expectedTag) {
+            throw new Error(`Tag ${process.env.RELEASE_TAG} does not match ${expectedTag}.`);
+          }
+          NODE
+        env:
+          RELEASE_TAG: ${{ inputs.tag || github.ref_name }}
+
+      - name: Prepare package README
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+          const packageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+          const readme = fs.readFileSync('README.md', 'utf8');
+          const startMarker = '<!-- package-readme:start -->';
+          const endMarker = '<!-- package-readme:end -->';
+          const start = readme.indexOf(startMarker);
+          const end = readme.indexOf(endMarker, start + startMarker.length);
+
+          if (start === -1 || end === -1) {
+            throw new Error('Package README markers are missing or out of order.');
+          }
+
+          const section = readme.slice(start + startMarker.length, end).trim();
+          const packageReadme = `# ${packageJson.name}\n\n${packageJson.description}\n\n${section}\n`;
+          fs.writeFileSync('README.md', packageReadme);
+          NODE
+
       - name: Publish package
         run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ inputs.tag || github.ref_name }}
+          name: Grit ${{ inputs.tag || github.ref_name }}
+          generate_release_notes: true
+          prerelease: ${{ contains(inputs.tag || github.ref_name, '-') }}
