@@ -1,5 +1,5 @@
 {
-  "name": "grit",
+  "name": "@johnpiapian/grit",
   "version": "2026.10.28-alpha",
   "description": "A simple CLI tool built with Bun",
   "author": "Sut Tuang - @johnpiapian",
@@ -25,7 +25,7 @@
     "dist/index.js"
   ],
   "bin": {
-    "grit": "./dist/index.js"
+    "grit": "dist/index.js"
   },
   "repository": {
     "type": "git",
