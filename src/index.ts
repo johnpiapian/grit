@@ -9,7 +9,7 @@ const defaultProgramInfo = {
 }
 
 const programInfo: MainParams = {
-  name: pkg.name || defaultProgramInfo.name,
+  name: defaultProgramInfo.name,
   description: pkg.description || defaultProgramInfo.description,
   version: pkg.version || defaultProgramInfo.version,
 }
