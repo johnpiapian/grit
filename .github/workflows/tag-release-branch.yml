@@ -1,4 +1,5 @@
-name: Tag merged release branch
+name: Tag Release Branch
+# Tags a release/vX.X.X branch and starts publishing when its PR is merged into main.
 
 on:
   pull_request:
@@ -45,6 +46,7 @@ jobs:
           git push origin "$TAG"
           echo "tag=$TAG" >> "$GITHUB_OUTPUT"
 
+      # GITHUB_TOKEN tag pushes do not trigger another workflow, so dispatch the publisher directly.
       - name: Start package publishing
         env:
           GH_TOKEN: ${{ github.token }}
