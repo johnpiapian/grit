@@ -1,5 +1,5 @@
 name: Tag Release Branch
-# Tags a release/vX.X.X branch and starts publishing when its PR is merged into main.
+# Tags any release/* branch and starts publishing when its PR is merged into main.
 
 on:
   pull_request:
@@ -25,17 +25,9 @@ jobs:
       - name: Create matching version tag
         id: tag
         env:
-          RELEASE_BRANCH: ${{ github.event.pull_request.head.ref }}
           MERGE_COMMIT: ${{ github.event.pull_request.merge_commit_sha }}
         run: |
           VERSION="$(node -p "require('./package.json').version")"
-          EXPECTED_BRANCH="release/$VERSION"
-
-          if [[ "$RELEASE_BRANCH" != "$EXPECTED_BRANCH" ]]; then
-            echo "Release branch '$RELEASE_BRANCH' must match '$EXPECTED_BRANCH'." >&2
-            exit 1
-          fi
-
           TAG="v$VERSION"
           if git ls-remote --exit-code --tags origin "refs/tags/$TAG" >/dev/null 2>&1; then
             echo "Tag '$TAG' already exists." >&2
