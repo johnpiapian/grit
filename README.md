@@ -106,7 +106,9 @@ Packaging builds the CLI and exposes `dist/index.js` as the `grit` command. The 
 
 ## Release
 
-After merging a version update to `main`, push a matching version tag to publish the package and create a GitHub Release:
+To release automatically, open a pull request from `release/<version>` into `main` and merge it. The branch suffix must match the version in `package.json`, for example `release/2026.10.27-alpha`. The workflow tags the merge commit, publishes the package, and creates a GitHub Release with generated notes.
+
+To publish manually instead, push a matching version tag after merging the version update:
 
 ```bash
 VERSION=$(node -p "require('./package.json').version")

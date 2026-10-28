@@ -4,6 +4,12 @@ on:
   push:
     tags:
       - "v*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Version tag to publish, such as v2026.10.27-alpha
+        required: true
+        type: string
 
 permissions:
   contents: write
@@ -17,6 +23,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v5
+        with:
+          ref: ${{ inputs.tag || github.ref }}
 
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
@@ -40,10 +48,12 @@ jobs:
           const packageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'));
           const expectedTag = `v${packageJson.version}`;
 
-          if (process.env.GITHUB_REF_NAME !== expectedTag) {
-            throw new Error(`Tag ${process.env.GITHUB_REF_NAME} does not match ${expectedTag}.`);
+          if (process.env.RELEASE_TAG !== expectedTag) {
+            throw new Error(`Tag ${process.env.RELEASE_TAG} does not match ${expectedTag}.`);
           }
           NODE
+        env:
+          RELEASE_TAG: ${{ inputs.tag || github.ref_name }}
 
       - name: Prepare package README
         run: |
@@ -73,6 +83,7 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          name: Grit ${{ github.ref_name }}
+          tag_name: ${{ inputs.tag || github.ref_name }}
+          name: Grit ${{ inputs.tag || github.ref_name }}
           generate_release_notes: true
-          prerelease: ${{ contains(github.ref_name, '-') }}
+          prerelease: ${{ contains(inputs.tag || github.ref_name, '-') }}

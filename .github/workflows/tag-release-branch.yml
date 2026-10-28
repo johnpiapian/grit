@@ -1,0 +1,52 @@
+name: Tag merged release branch
+
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - main
+
+permissions:
+  contents: write
+  actions: write
+
+jobs:
+  tag-and-publish:
+    if: github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, 'release/')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout merged commit
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.pull_request.merge_commit_sha }}
+
+      - name: Create matching version tag
+        id: tag
+        env:
+          RELEASE_BRANCH: ${{ github.event.pull_request.head.ref }}
+          MERGE_COMMIT: ${{ github.event.pull_request.merge_commit_sha }}
+        run: |
+          VERSION="$(node -p "require('./package.json').version")"
+          EXPECTED_BRANCH="release/$VERSION"
+
+          if [[ "$RELEASE_BRANCH" != "$EXPECTED_BRANCH" ]]; then
+            echo "Release branch '$RELEASE_BRANCH' must match '$EXPECTED_BRANCH'." >&2
+            exit 1
+          fi
+
+          TAG="v$VERSION"
+          if git ls-remote --exit-code --tags origin "refs/tags/$TAG" >/dev/null 2>&1; then
+            echo "Tag '$TAG' already exists." >&2
+            exit 1
+          fi
+
+          git tag "$TAG" "$MERGE_COMMIT"
+          git push origin "$TAG"
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+
+      - name: Start package publishing
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ steps.tag.outputs.tag }}
+        run: gh workflow run publish.yml --ref main --field tag="$RELEASE_TAG"
