@@ -1,5 +1,5 @@
 {
-  "name": "grit",
+  "name": "@johnpiapian/grit",
   "version": "2026.6.20-alpha",
   "description": "A simple CLI tool built with Bun",
   "author": "Sut Tuang - @johnpiapian",
@@ -46,5 +46,8 @@
   },
   "dependencies": {
     "commander": "^15.0.0"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
   }
 }
