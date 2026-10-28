@@ -14,7 +14,10 @@ describe("main function", () => {
   it("registers the default command", () => {
     const program = buildProgram(programInfo, { env: {} })
 
-    expect(program.commands.map((command) => command.name())).toEqual(["greet"])
+    expect(program.commands.map((command) => command.name())).toEqual([
+      "greet",
+      "update",
+    ])
   })
 
   it("filters commands using the injected environment", () => {
