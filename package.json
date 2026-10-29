@@ -1,6 +1,6 @@
 {
   "name": "@johnpiapian/grit",
-  "version": "2026.10.28-alpha",
+  "version": "2026.10.28",
   "description": "A simple CLI tool built with Bun",
   "author": "Sut Tuang - @johnpiapian",
   "license": "ISC",
