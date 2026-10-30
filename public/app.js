@@ -26,14 +26,25 @@ function appendLine(text, kind = "output") {
   terminalScreen.scrollTop = terminalScreen.scrollHeight
 }
 
-function printHelp() {
-  appendLine("Available commands:")
-  appendLine("  help                Show available commands")
-  appendLine("  version             Show app version")
-  appendLine("  greet <style> [name] [flags]")
-  appendLine("    flags: --loud, --emoji, --lang <es|fr|de|jp|default>")
-  appendLine("  test                Run a fake test suite")
-  appendLine("  clear               Clear the terminal")
+async function printHelp() {
+  const response = await fetch("/api/commands")
+  if (!response.ok) throw new Error("Could not load command help.")
+
+  const commands = await response.json()
+  appendLine("CLI commands:")
+
+  for (const command of commands) {
+    appendLine(`  ${command.id} ${command.usage}`)
+    appendLine(
+      `    ${command.description}${command.webSupported ? "" : " (CLI only)"}`,
+    )
+
+    for (const option of command.options) {
+      appendLine(`    ${option.flags} - ${option.description}`)
+    }
+  }
+
+  appendLine("Web controls: help, version, clear, ls, whoami")
 }
 
 function parseCommand(raw) {
@@ -87,7 +98,7 @@ async function handleCommand(rawCommand) {
   try {
     switch (parsed.command) {
       case "help":
-        printHelp()
+        await printHelp()
         break
       case "version":
         appendLine("grit 2026.10.28")
@@ -98,14 +109,6 @@ async function handleCommand(rawCommand) {
       case "greet":
         await runGreetCommand(parsed.args)
         break
-      case "test": {
-        appendLine("Running fake test suite...")
-        appendLine("✓ greet.service: 3 tests passed")
-        appendLine("✓ update.service: 4 tests passed")
-        appendLine("✓ cli integration: 7 tests passed")
-        appendLine("Total: 14 passed, 0 failed")
-        break
-      }
       case "ls":
         appendLine("src/  public/  README.md  package.json")
         break

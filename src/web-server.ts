@@ -1,6 +1,10 @@
 import { join } from "node:path"
 import { fileURLToPath } from "node:url"
-import { buildWebGreetingResponse, normalizeGreetingRequest } from "./web"
+import {
+  buildWebGreetingResponse,
+  getWebCommandCatalog,
+  normalizeGreetingRequest,
+} from "./web"
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = join(__filename, "..")
@@ -15,6 +19,14 @@ const server = Bun.serve({
   port: Number(process.env.PORT ?? 3000),
   fetch(request) {
     const url = new URL(request.url)
+
+    if (url.pathname === "/api/commands") {
+      if (request.method !== "GET") {
+        return Response.json({ error: "Method not allowed" }, { status: 405 })
+      }
+
+      return Response.json(getWebCommandCatalog())
+    }
 
     if (url.pathname === "/api/greet") {
       if (request.method !== "POST") {

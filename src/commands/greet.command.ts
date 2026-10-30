@@ -1,4 +1,5 @@
 import { Command } from "commander"
+import { CLI_COMMAND_CATALOG } from "../command-catalog"
 import { BaseCliCommand } from "../core/command.base"
 import { Response } from "../core/response.model"
 import {
@@ -10,8 +11,9 @@ import {
 } from "../services/greeting.service"
 
 export class GreetCommand extends BaseCliCommand {
-  readonly id = "greet"
-  readonly description = "Greet someone with various styles and options"
+  private readonly definition = CLI_COMMAND_CATALOG[0]
+  readonly id = this.definition.id
+  readonly description = this.definition.description
 
   // using it indirectly to allow exclusion of certain styles/languages
   private readonly supportedStyles = SUPPORTED_STYLES
@@ -21,29 +23,33 @@ export class GreetCommand extends BaseCliCommand {
     const greetCommand = new Command(this.id)
       .description(this.description)
       .argument(
-        "<style>",
-        `Greeting style (${this.supportedStyles.join(", ")})`,
+        this.definition.arguments[0].syntax,
+        this.definition.arguments[0].description,
       )
-      .argument("[name]", "Name of the person to greet", "world")
-      .option("-l, --loud", "Print greeting in uppercase")
-      .option("-e, --emoji", "Include emojis in the greeting")
-      .option(
-        "--lang, --language <lang>",
-        "Language code for multilingual style (es, fr, de, jp)",
-        "default",
+      .argument(
+        this.definition.arguments[1].syntax,
+        this.definition.arguments[1].description,
+        this.definition.arguments[1].defaultValue,
       )
-      .action((style, name, options) => {
-        const validation = this.validateInput(name, style, options)
-        if (validation.isError) {
-          validation.print()
-          return
-        }
 
-        const response = this.processGreeting(name, style, options)
-        response.print()
-      })
+    for (const option of this.definition.options) {
+      greetCommand.option(
+        option.flags,
+        option.description,
+        "defaultValue" in option ? option.defaultValue : undefined,
+      )
+    }
 
-    return greetCommand
+    return greetCommand.action((style, name, options) => {
+      const validation = this.validateInput(name, style, options)
+      if (validation.isError) {
+        validation.print()
+        return
+      }
+
+      const response = this.processGreeting(name, style, options)
+      response.print()
+    })
   }
 
   private validateInput(

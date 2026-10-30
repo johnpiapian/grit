@@ -2,6 +2,11 @@ export default {
   async fetch(request) {
     const url = new URL(request.url)
 
+    if (url.pathname === "/api/commands") {
+      const { getWebCommandCatalog } = await import("./src/web.ts")
+      return Response.json(getWebCommandCatalog())
+    }
+
     if (url.pathname === "/api/greet") {
       const body = await request.json().catch(() => ({}))
       const { buildWebGreetingResponse, normalizeGreetingRequest } =

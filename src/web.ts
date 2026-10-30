@@ -1,3 +1,4 @@
+import { CLI_COMMAND_CATALOG } from "./command-catalog"
 import {
   buildGreetingMessage,
   type GreetingStyle,
@@ -16,6 +17,10 @@ export type GreetingRequest = {
 export type WebGreetingResponse = {
   greeting: string
   ok: true
+}
+
+export function getWebCommandCatalog() {
+  return CLI_COMMAND_CATALOG
 }
 
 export function normalizeGreetingRequest(

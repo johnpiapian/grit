@@ -3,7 +3,11 @@ import { Command } from "commander"
 import { buildProgram, main } from "./cli"
 import { BaseCliCommand } from "./core/command.base"
 import { Response, StatusCode } from "./core/response.model"
-import { buildWebGreetingResponse, normalizeGreetingRequest } from "./web"
+import {
+  buildWebGreetingResponse,
+  getWebCommandCatalog,
+  normalizeGreetingRequest,
+} from "./web"
 
 const programInfo = {
   name: "grit",
@@ -70,6 +74,17 @@ describe("Response", () => {
 })
 
 describe("web app", () => {
+  it("uses the CLI command catalog for browser help", () => {
+    const program = buildProgram(programInfo, { env: {} })
+    const catalog = getWebCommandCatalog()
+
+    expect(catalog).toHaveLength(program.commands.length)
+    for (const [index, command] of program.commands.entries()) {
+      expect(String(catalog[index]?.id)).toBe(command.name())
+      expect(String(catalog[index]?.description)).toBe(command.description())
+    }
+  })
+
   it("normalizes browser input into a greeting request", () => {
     const payload = normalizeGreetingRequest({
       name: "Ada",
