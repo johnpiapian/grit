@@ -4,7 +4,8 @@ export default {
 
     if (url.pathname === "/api/greet") {
       const body = await request.json().catch(() => ({}))
-      const { buildWebGreetingResponse, normalizeGreetingRequest } = await import("./src/web.ts")
+      const { buildWebGreetingResponse, normalizeGreetingRequest } =
+        await import("./src/web.ts")
       const payload = normalizeGreetingRequest(body)
 
       return Response.json(buildWebGreetingResponse(payload))

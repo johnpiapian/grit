@@ -36,9 +36,10 @@ export function normalizeGreetingInput(
       ? (input.style as GreetingStyle)
       : "casual"
 
-  const name = typeof input.name === "string" && input.name.trim()
-    ? input.name.trim()
-    : "world"
+  const name =
+    typeof input.name === "string" && input.name.trim()
+      ? input.name.trim()
+      : "world"
 
   const language =
     typeof input.language === "string" &&

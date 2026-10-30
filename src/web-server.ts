@@ -1,9 +1,6 @@
 import { join } from "node:path"
 import { fileURLToPath } from "node:url"
-import {
-  buildWebGreetingResponse,
-  normalizeGreetingRequest,
-} from "./web"
+import { buildWebGreetingResponse, normalizeGreetingRequest } from "./web"
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = join(__filename, "..")
@@ -21,10 +18,7 @@ const server = Bun.serve({
 
     if (url.pathname === "/api/greet") {
       if (request.method !== "POST") {
-        return Response.json(
-          { error: "Method not allowed" },
-          { status: 405 },
-        )
+        return Response.json({ error: "Method not allowed" }, { status: 405 })
       }
 
       try {
@@ -35,13 +29,16 @@ const server = Bun.serve({
           : Promise.resolve({})
 
         return payload.then((data) => {
-          const normalized = normalizeGreetingRequest(data as Parameters<typeof normalizeGreetingRequest>[0])
+          const normalized = normalizeGreetingRequest(
+            data as Parameters<typeof normalizeGreetingRequest>[0],
+          )
           return Response.json(buildWebGreetingResponse(normalized))
         })
       } catch (error) {
         return Response.json(
           {
-            error: error instanceof Error ? error.message : "Invalid request body",
+            error:
+              error instanceof Error ? error.message : "Invalid request body",
           },
           { status: 400 },
         )
@@ -66,7 +63,8 @@ const server = Bun.serve({
 
       return new Response(file, {
         headers: {
-          "Content-Type": map[extension as keyof typeof map] ?? "text/plain; charset=utf-8",
+          "Content-Type":
+            map[extension as keyof typeof map] ?? "text/plain; charset=utf-8",
         },
       })
     })

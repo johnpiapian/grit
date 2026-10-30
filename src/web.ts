@@ -1,8 +1,8 @@
 import {
   buildGreetingMessage,
-  normalizeGreetingInput,
   type GreetingStyle,
   type LanguageCode,
+  normalizeGreetingInput,
 } from "./services/greeting.service"
 
 export type GreetingRequest = {

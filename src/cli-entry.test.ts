@@ -3,10 +3,7 @@ import { Command } from "commander"
 import { buildProgram, main } from "./cli"
 import { BaseCliCommand } from "./core/command.base"
 import { Response, StatusCode } from "./core/response.model"
-import {
-  buildWebGreetingResponse,
-  normalizeGreetingRequest,
-} from "./web"
+import { buildWebGreetingResponse, normalizeGreetingRequest } from "./web"
 
 const programInfo = {
   name: "grit",

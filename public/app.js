@@ -127,7 +127,9 @@ async function handleCommand(rawCommand) {
   terminalInput.focus()
 }
 
-bootLines.forEach((line) => appendLine(line))
+bootLines.forEach((line) => {
+  appendLine(line)
+})
 terminalInput.focus()
 
 terminalInput.addEventListener("keydown", (event) => {

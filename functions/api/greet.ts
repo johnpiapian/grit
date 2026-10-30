@@ -3,7 +3,11 @@ import {
   normalizeGreetingRequest,
 } from "../../src/web"
 
-export async function onRequestPost({ request }: { request: Request }): Promise<Response> {
+export async function onRequestPost({
+  request,
+}: {
+  request: Request
+}): Promise<Response> {
   try {
     const contentType = request.headers.get("content-type") ?? ""
     const body = contentType.includes("application/json")
@@ -11,7 +15,9 @@ export async function onRequestPost({ request }: { request: Request }): Promise<
       : {}
 
     const response = buildWebGreetingResponse(
-      normalizeGreetingRequest(body as Parameters<typeof normalizeGreetingRequest>[0]),
+      normalizeGreetingRequest(
+        body as Parameters<typeof normalizeGreetingRequest>[0],
+      ),
     )
 
     return Response.json(response)
@@ -29,9 +35,16 @@ export async function onRequestPost({ request }: { request: Request }): Promise<
   }
 }
 
-export async function onRequest({ request }: { request: Request }): Promise<Response> {
+export async function onRequest({
+  request,
+}: {
+  request: Request
+}): Promise<Response> {
   if (request.method !== "POST") {
-    return Response.json({ ok: false, error: "Method not allowed" }, { status: 405 })
+    return Response.json(
+      { ok: false, error: "Method not allowed" },
+      { status: 405 },
+    )
   }
 
   return onRequestPost({ request })

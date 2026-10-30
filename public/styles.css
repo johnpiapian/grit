@@ -66,9 +66,15 @@ body {
   display: inline-block;
 }
 
-.light.red { background: var(--red); }
-.light.yellow { background: var(--yellow); }
-.light.green { background: var(--green-dot); }
+.light.red {
+  background: var(--red);
+}
+.light.yellow {
+  background: var(--yellow);
+}
+.light.green {
+  background: var(--green-dot);
+}
 
 .terminal-title {
   color: rgba(231, 237, 244, 0.8);
