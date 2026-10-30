@@ -1,14 +1,18 @@
 {
   "name": "@johnpiapian/grit",
-  "version": "2026.10.28",
+  "version": "2026.10.29-alpha",
   "description": "A simple CLI tool built with Bun",
   "author": "Sut Tuang - @johnpiapian",
   "license": "ISC",
   "type": "module",
   "scripts": {
-    "clean": "rm -rf dist",
-    "dev": "bun run --watch src/index.ts",
-    "start": "bun run src/index.ts",
+    "clean": "rm -rf dist && mkdir -p dist",
+    "clean:cli": "rm -rf dist/cli && mkdir -p dist/cli",
+    "clean:web": "rm -rf dist/web && mkdir -p dist/web/public",
+    "dev": "bun run --watch src/cli-entry.ts",
+    "dev:web": "bun run src/web-server.ts",
+    "start": "bun run src/cli-entry.ts",
+    "start:web": "bun run src/web-server.ts",
     "format": "bunx biome format --write .",
     "format:check": "bunx biome format --check .",
     "lint": "bunx biome check .",
@@ -16,16 +20,19 @@
     "typecheck": "bunx tsc --noEmit",
     "test": "bun test",
     "check": "bun run lint && bun run typecheck && bun test",
-    "build": "bun run clean && bun build src/index.ts --outfile dist/index.js --target bun",
-    "build:standalone": "bun build src/index.ts --compile --outfile dist/grit",
+    "build": "bun run clean && bun run build:cli && bun run build:web",
+    "build:cli": "bun run clean:cli && bun build src/cli-entry.ts --outfile dist/cli/index.js --target bun",
+    "build:web": "bun run clean:web && bun build src/web-server.ts --outfile dist/web/server.js --target bun && cp -R public dist/web/public",
+    "build:pages": "rm -rf dist && mkdir -p dist && cp -R public dist && cp -R src dist/src",
+    "build:standalone": "bun build src/cli-entry.ts --compile --outfile dist/cli/grit",
     "prepack": "bun run build",
     "package": "bun pm pack"
   },
   "files": [
-    "dist/index.js"
+    "dist/cli"
   ],
   "bin": {
-    "grit": "dist/index.js"
+    "grit": "dist/cli/index.js"
   },
   "repository": {
     "type": "git",

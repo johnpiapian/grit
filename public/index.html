@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>grit terminal</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="terminal-shell">
+      <div class="terminal-window">
+        <div class="terminal-header">
+          <div class="traffic-lights">
+            <span class="light red"></span>
+            <span class="light yellow"></span>
+            <span class="light green"></span>
+          </div>
+          <div class="terminal-title">suttuang@Mac:~/dev/projects/grit</div>
+        </div>
+
+        <div class="terminal-body">
+          <div id="terminal-screen" class="terminal-screen" aria-live="polite"></div>
+
+          <div class="command-input-row">
+            <span class="prompt">grit@web:~$</span>
+            <input
+              id="terminal-input"
+              class="terminal-input"
+              type="text"
+              autocomplete="off"
+              spellcheck="false"
+              aria-label="Terminal command input"
+            />
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script src="/app.js"></script>
+  </body>
+</html>

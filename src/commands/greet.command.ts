@@ -2,7 +2,7 @@ import { Command } from "commander"
 import { BaseCliCommand } from "../core/command.base"
 import { Response } from "../core/response.model"
 import {
-  GreetingService,
+  buildGreetingMessage,
   type GreetingStyle,
   type GreetOptions,
   SUPPORTED_LANGUAGES,
@@ -16,8 +16,6 @@ export class GreetCommand extends BaseCliCommand {
   // using it indirectly to allow exclusion of certain styles/languages
   private readonly supportedStyles = SUPPORTED_STYLES
   private readonly supportedLanguages = SUPPORTED_LANGUAGES
-
-  private readonly greetingService = new GreetingService()
 
   build(): Command {
     const greetCommand = new Command(this.id)
@@ -80,9 +78,9 @@ export class GreetCommand extends BaseCliCommand {
     style: GreetingStyle,
     options: GreetOptions,
   ): Response<string> {
-    const message = this.greetingService.buildGreeting({
+    const message = buildGreetingMessage({
       name,
-      style: style,
+      style,
       loud: options.loud,
       emoji: options.emoji,
       language: options.language,

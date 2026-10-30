@@ -27,6 +27,44 @@ export type BuildGreetingInput = {
   now?: Date
 }
 
+export function normalizeGreetingInput(
+  input: Partial<BuildGreetingInput> = {},
+): BuildGreetingInput {
+  const style =
+    typeof input.style === "string" &&
+    SUPPORTED_STYLES.includes(input.style as GreetingStyle)
+      ? (input.style as GreetingStyle)
+      : "casual"
+
+  const name = typeof input.name === "string" && input.name.trim()
+    ? input.name.trim()
+    : "world"
+
+  const language =
+    typeof input.language === "string" &&
+    SUPPORTED_LANGUAGES.includes(input.language as LanguageCode)
+      ? (input.language as LanguageCode)
+      : "default"
+
+  return {
+    name,
+    style,
+    loud: !!input.loud,
+    emoji: !!input.emoji,
+    language,
+    now: input.now,
+  }
+}
+
+export function buildGreetingMessage(
+  input: Partial<BuildGreetingInput>,
+): string {
+  const service = new GreetingService()
+  const normalized = normalizeGreetingInput(input)
+
+  return service.buildGreeting(normalized)
+}
+
 export class GreetingService {
   readonly greetingsInLanguages: Record<LanguageCode, string> = {
     es: "¡Hola",

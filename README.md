@@ -6,10 +6,21 @@
 
 Requirements: [Bun](https://bun.sh/) to install dependencies, run the project, and build it.
 
+### CLI
+
 ```bash
 bun install
-bun run src/index.ts greet casual Ada --emoji
+bun run src/cli-entry.ts greet casual Ada --emoji
 ```
+
+### Web version
+
+```bash
+bun install
+bun run dev:web
+```
+
+Then open http://localhost:3000 in a browser to use the greeting form.
 
 Expected output:
 
@@ -22,9 +33,9 @@ Expected output:
 The `greet` command accepts a style (`formal`, `casual`, or `time`) and an optional name. The name defaults to `world`.
 
 ```bash
-bun run src/index.ts greet formal Ada
-bun run src/index.ts greet time Ada --loud
-bun run src/index.ts greet casual Ada --lang fr --emoji
+bun run src/cli-entry.ts greet formal Ada
+bun run src/cli-entry.ts greet time Ada --loud
+bun run src/cli-entry.ts greet casual Ada --lang fr --emoji
 ```
 
 Options:
@@ -40,15 +51,15 @@ Options:
 Set `GRIT_COMMANDS` to a comma-separated list of enabled command IDs. If it is unset or empty, all registered commands are enabled.
 
 ```bash
-GRIT_COMMANDS=greet bun run src/index.ts greet casual Ada
+GRIT_COMMANDS=greet bun run src/cli-entry.ts greet casual Ada
 ```
 
 ## Architecture
 
 ```text
 src/
-├── index.ts                 # Executable entry point and process-level errors
-├── index.test.ts            # CLI composition and response tests
+├── cli-entry.ts             # CLI executable entry point and process-level errors
+├── cli-entry.test.ts        # CLI composition and response tests
 ├── cli.ts                   # Commander setup, configuration, and command registration
 ├── commands/                # CLI command adapters, arguments, and validation
 ├── configs/                 # configuration and environment helpers
@@ -59,7 +70,7 @@ src/
 	└── greeting.service.test.ts  # Greeting behavior tests
 ```
 
-`index.ts` reads package metadata and calls `main`. `buildProgram` in `cli.ts` assembles configuration and command implementations; it accepts optional environment and command overrides. `main` accepts an optional argument list and parses it asynchronously, defaulting to the current process arguments. These inputs let tests exercise command composition and parsing without mutating process-global state. Each command builds its Commander interface and delegates domain work to a service; shared command and response behavior lives in `core/`.
+`cli-entry.ts` reads package metadata and calls `main`. `buildProgram` in `cli.ts` assembles configuration and command implementations; it accepts optional environment and command overrides. `main` accepts an optional argument list and parses it asynchronously, defaulting to the current process arguments. These inputs let tests exercise command composition and parsing without mutating process-global state. Each command builds its Commander interface and delegates domain work to a service; shared command and response behavior lives in `core/`.
 
 ## Add a Command
 

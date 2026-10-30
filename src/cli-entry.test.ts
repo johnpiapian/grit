@@ -3,6 +3,10 @@ import { Command } from "commander"
 import { buildProgram, main } from "./cli"
 import { BaseCliCommand } from "./core/command.base"
 import { Response, StatusCode } from "./core/response.model"
+import {
+  buildWebGreetingResponse,
+  normalizeGreetingRequest,
+} from "./web"
 
 const programInfo = {
   name: "grit",
@@ -65,5 +69,38 @@ describe("Response", () => {
       process.exitCode = previousExitCode ?? 0 // Restore or reset to 0
       errorOutput.mockRestore()
     }
+  })
+})
+
+describe("web app", () => {
+  it("normalizes browser input into a greeting request", () => {
+    const payload = normalizeGreetingRequest({
+      name: "Ada",
+      style: "formal",
+      loud: true,
+      emoji: true,
+      language: "fr",
+    })
+
+    expect(payload).toEqual({
+      name: "Ada",
+      style: "formal",
+      loud: true,
+      emoji: true,
+      language: "fr",
+    })
+  })
+
+  it("builds a greeting response for the browser UI", () => {
+    expect(
+      buildWebGreetingResponse({
+        name: "Ada",
+        style: "casual",
+        emoji: true,
+      }),
+    ).toEqual({
+      greeting: "👋 Hey Ada!",
+      ok: true,
+    })
   })
 })

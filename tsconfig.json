@@ -8,5 +8,5 @@
     "types": ["bun"],
     "skipLibCheck": true
   },
-  "include": ["src/**/*.ts", "src/index.test.ts", "src/index.ts"]
+  "include": ["src/**/*.ts", "src/cli-entry.test.ts", "src/cli-entry.ts"]
 }

@@ -1,0 +1,150 @@
+:root {
+  --bg: #02080e;
+  --bg-soft: #0a1116;
+  --screen: rgba(3, 7, 10, 0.98);
+  --panel-border: rgba(161, 177, 194, 0.12);
+  --text: #e7edf4;
+  --muted: #8aa1b8;
+  --green: #7adf85;
+  --cyan: #48d0ff;
+  --accent: #5fe4ff;
+  --red: #ff5f57;
+  --yellow: #ffbd2f;
+  --green-dot: #28c840;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "SFMono-Regular", "Consolas", "Liberation Mono", monospace;
+}
+
+body {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.terminal-shell {
+  width: min(100%, 980px);
+}
+
+.terminal-window {
+  background: rgba(0, 0, 0, 0.85);
+  border: 1px solid var(--panel-border);
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
+}
+
+.terminal-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 18px;
+  background: rgba(18, 22, 28, 0.9);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.traffic-lights {
+  display: flex;
+  gap: 8px;
+}
+
+.light {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.light.red { background: var(--red); }
+.light.yellow { background: var(--yellow); }
+.light.green { background: var(--green-dot); }
+
+.terminal-title {
+  color: rgba(231, 237, 244, 0.8);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+}
+
+.terminal-body {
+  padding: 18px 20px 18px;
+  min-height: 520px;
+  background: var(--screen);
+}
+
+.terminal-screen {
+  min-height: 420px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text);
+  white-space: pre-wrap;
+  overflow: auto;
+}
+
+.terminal-line {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  min-height: 22px;
+}
+
+.terminal-line.output {
+  color: var(--muted);
+}
+
+.terminal-line.command {
+  color: var(--text);
+}
+
+.terminal-line.error {
+  color: #ff8a80;
+}
+
+.prompt {
+  color: var(--green);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.command-input-row {
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 12px;
+}
+
+.terminal-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--text);
+  outline: none;
+  font: inherit;
+  padding: 0;
+}
+
+.terminal-input:focus {
+  outline: none;
+}
+
+@media (max-width: 720px) {
+  .terminal-body {
+    padding: 14px 12px 12px;
+  }
+}
