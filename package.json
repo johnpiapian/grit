@@ -1,14 +1,15 @@
 {
   "name": "@johnpiapian/grit",
-  "version": "2026.10.28",
+  "version": "2026.10.29-alpha.0",
   "description": "A simple CLI tool built with Bun",
   "author": "Sut Tuang - @johnpiapian",
   "license": "ISC",
   "type": "module",
   "scripts": {
-    "clean": "rm -rf dist",
-    "dev": "bun run --watch src/index.ts",
-    "start": "bun run src/index.ts",
+    "clean": "rm -rf dist && mkdir -p dist",
+    "clean:cli": "rm -rf dist/cli && mkdir -p dist/cli",
+    "dev": "bun run --watch src/cli-entry.ts",
+    "start": "bun run src/cli-entry.ts",
     "format": "bunx biome format --write .",
     "format:check": "bunx biome format --check .",
     "lint": "bunx biome check .",
@@ -16,16 +17,17 @@
     "typecheck": "bunx tsc --noEmit",
     "test": "bun test",
     "check": "bun run lint && bun run typecheck && bun test",
-    "build": "bun run clean && bun build src/index.ts --outfile dist/index.js --target bun",
-    "build:standalone": "bun build src/index.ts --compile --outfile dist/grit",
+    "build": "bun run build:cli",
+    "build:cli": "bun run clean:cli && bun build src/cli-entry.ts --outfile dist/cli/index.js --target bun",
+    "build:standalone": "mkdir -p dist/cli && bun build src/cli-entry.ts --compile --outfile dist/cli/grit",
     "prepack": "bun run build",
     "package": "bun pm pack"
   },
   "files": [
-    "dist/index.js"
+    "dist/cli"
   ],
   "bin": {
-    "grit": "dist/index.js"
+    "grit": "dist/cli/index.js"
   },
   "repository": {
     "type": "git",
